@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "elementary-bounties"
+version = "0.1.0"
+description = ""
+authors = ["stsdc <6031763+stsdc@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+alembic = "^1.14.0"
+fastapi = "^0.115.5"
+aiosqlite = "^0.20.0"
+pydantic = {extras = ["dotenv", "email"], version = "^2.10.1"}
+python-jose = "^3.3.0"
+passlib = "^1.7.4"
+python-multipart = "^0.0.17"
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.6.1"
+freezegun = "^1.5.1"
+gevent = "^24.2.1"
+httpx = "^0.27.0"
+mypy = "^1.11.2"
+pre-commit = "^3.8.0"
+pytest = "^8.3.2"
+pytest-asyncio = "^0.24.0"
+pytest-cov = "^5.0.0"
+pytest-xdist = "^3.6.1"
+ruff = "^0.6.2"
+types-passlib = "^1.7.7.20240819"
+uvicorn = { extras = ["standard"], version = "^0.30.6" }
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
