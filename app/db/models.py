@@ -19,6 +19,7 @@ class Users(Base):
         "Posts", back_populates="user", lazy="selectin", cascade="all, delete"
     )
 
+
 class Posts(Base):
     __tablename__ = "posts"
 
@@ -29,3 +30,26 @@ class Posts(Base):
     creation_date = sa.Column(sa.DateTime, server_default=sa.func.now(), nullable=False)  # type: ignore
 
     user = relationship("Users", back_populates="posts", lazy="selectin")  # type: ignore
+
+
+class Repositories(Base):
+    __tablename__ = "repositories"
+
+    id = sa.Column(sa.Integer, primary_key=True, index=True)
+    name = sa.Column(sa.Text, nullable=False)
+    is_visible = sa.Column(sa.Boolean, nullable=False, default=True)
+    issues_count = sa.Column(sa.Integer, nullable=False, default=0)
+
+    issues = relationship(
+        "Issues", back_populates="repository", lazy="selectin", cascade="all, delete"
+    )
+
+
+class Issues(Base):
+    __tablename__ = "issues"
+    id = sa.Column(sa.Integer, primary_key=True, index=True)
+    title = sa.Column(sa.Text, nullable=False)
+    completed = sa.Column(sa.Boolean, nullable=False, default=False)
+    cumulative_bounty = sa.Column(sa.Integer, nullable=False, default=0)
+    repository = relationship("Repositories", back_populates="issues", lazy="selectin")
+    repository_id = sa.Column(sa.Integer, ForeignKey("repositories.id"), nullable=False, index=True)
