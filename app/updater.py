@@ -1,7 +1,11 @@
+import os
 from github import Github
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Replace with your GitHub access token
-access_token = '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'
+access_token = os.environ.get("GITHUB_TOKEN")
 
 # Replace with your organization's name
 org_name = 'elementary'
