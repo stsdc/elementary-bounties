@@ -1,12 +1,10 @@
+from typing import Sequence, Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select, delete
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.db import sessions
 from app.db.models import Repositories, Users
 from app.db.schemas import repositories as repos_schema
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-)
-from typing import Sequence, Annotated
 from app.deps import get_current_user
 
 
