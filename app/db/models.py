@@ -48,6 +48,7 @@ class Repositories(Base):
 class Issues(Base):
     __tablename__ = "issues"
     id = sa.Column(sa.Integer, primary_key=True, index=True)
+    issue_number = sa.Column(sa.Integer, nullable=False, default=0)
     title = sa.Column(sa.Text, nullable=False)
     completed = sa.Column(sa.Boolean, nullable=False, default=False)
     cumulative_bounty = sa.Column(sa.Integer, nullable=False, default=0)
