@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import users, posts, auth, repositories
+from app.routers import users, posts, auth, repositories, index
 
 
 def create_app() -> FastAPI:
@@ -10,6 +10,7 @@ def create_app() -> FastAPI:
     app.include_router(posts.router)
     app.include_router(auth.router)
     app.include_router(repositories.router)
+    app.include_router(index.router)
 
     # For local development
     origins = [
