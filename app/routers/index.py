@@ -14,6 +14,12 @@ auth_user_dependency = Annotated[Users, Depends(get_current_user)]
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
+
 @router.get("/")
-async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+async def index(request: Request, db: AsyncSession = Depends(sessions.get_async_session)):
+    
+    q = select(Repositories)
+    result = await db.execute(q)
+    repos = result.scalars().all()
+    print(repos)
+    return templates.TemplateResponse(name="index.html", request=request, context={"repositories": repos})
