@@ -54,6 +54,11 @@ async def get_db_repos(session):
     result = await session.execute(q)
     return result.scalars().all()
 
+async def issue_exists(issue_number, session):
+    result = await session.execute(
+        select(Issues).where(Issues.issue_number == issue_number)
+    )
+    return result.scalars().first()
 
 # async def issue_exists()
 async def update_issues():
@@ -63,18 +68,19 @@ async def update_issues():
             for repo in repos:
                 if not repo.archived:
                     counter += 1
-                    if counter >= 5:
+                    if counter >= 7:
                         break
                     for issue in repo.get_issues(labels=labels_filter):
-                        print(repo.name, issue.title)
-                        db_repo = await repository_exists(repo, session)
-                        session.add(
-                            Issues(
-                                title=issue.title,
-                                repository_id=db_repo.id,
-                                issue_number=issue.number,
+                        if not await issue_exists(issue.number, session):
+                            print(repo.name, issue.title)
+                            db_repo = await repository_exists(repo, session)
+                            session.add(
+                                Issues(
+                                    title=issue.title,
+                                    repository_id=db_repo.id,
+                                    issue_number=issue.number,
+                                )
                             )
-                        )
         await session.commit()
 
 
