@@ -8,11 +8,9 @@ from app.db.schemas import repositories as repos_schema
 from app.deps import get_current_user
 
 
-router = APIRouter(prefix="/repositories", tags=["repositories"])
-
 auth_user_dependency = Annotated[Users, Depends(get_current_user)]
 
-router = APIRouter(prefix="/repositories", tags=["repositories"])
+router = APIRouter(prefix="/api/repositories", tags=["api", "repositories"])
 
 
 @router.get("/")

@@ -11,11 +11,15 @@
 </head>
 
 <body>
-    <ul>
-        {% for repository in repositories %}
-        <li>{{repository.name}}</li>
-        {% endfor %}
-    </ul>
+    <div class="container-fluid">
+        <ul>
+            {% for repository in repositories %}
+            <li><a href="/{{repository.name}}">{{repository.name}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
 
 </body>
 

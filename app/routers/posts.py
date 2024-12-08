@@ -10,7 +10,7 @@ from typing import Sequence, Annotated
 from app.deps import get_current_user
 
 
-router = APIRouter(prefix="/posts", tags=["posts"])
+router = APIRouter(prefix="/api/posts", tags=["api", "posts"])
 
 auth_user_dependency = Annotated[Users, Depends(get_current_user)]
 
