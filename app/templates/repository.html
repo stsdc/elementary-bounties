@@ -26,6 +26,10 @@
                                   <span class="text-secondary">#{{issue.issue_number}}</span>
                                 </div>
                                 <span class="badge bg-primary rounded-pill">${{issue.cumulative_bounty}}</span>
+
+                                <form action="/create-checkout-session" method="POST">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">bump it</button>
+                                </form>
                               </li>
                             
                             
