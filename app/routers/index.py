@@ -1,5 +1,5 @@
 from typing import Sequence, Annotated
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Form
 from fastapi.responses import RedirectResponse
 from sqlalchemy import select, delete
 from fastapi.templating import Jinja2Templates
@@ -14,7 +14,7 @@ import stripe
 # This test secret API key is a placeholder. Don't include personal details in requests with this key.
 # To see your test secret API key embedded in code samples, sign in to your Stripe account.
 # You can also find your test secret API key at https://dashboard.stripe.com/test/apikeys.
-stripe.api_key = ''
+stripe.api_key = 'sk_test_51QU4mTHoNPk03hr4VgB8W8A47ihHBdH0PWWXEf8mCmYDmSt5sAcnCVsPERDrygT1034O7Q5oihmqedDtNpYdl6TF0024RmzG5R'
 
 auth_user_dependency = Annotated[Users, Depends(get_current_user)]
 
@@ -57,7 +57,7 @@ async def get_post(
     )
 
 @router.post('/create-checkout-session')
-async def create_checkout_session(request: Request, ):
+async def create_checkout_session(request: Request, repository_name: Annotated[str, Form()], issue_number: Annotated[str, Form()]):
     try:
         checkout_session = stripe.checkout.Session.create(
             line_items=[
@@ -69,13 +69,13 @@ async def create_checkout_session(request: Request, ):
             ],
             mode='payment',
             success_url=str(request.base_url) + '/success.html',
-            cancel_url=str(request.base_url) + '/cancel.html',
+            cancel_url=str(request.base_url) + f'{repository_name}',
             custom_fields=[
                 {
                     "key": "issue",
-                    "label": {"type": "custom", "custom": "Repository and Issue number"},
+                    "label": {"type": "custom", "custom": "Repository and Issue number (do not edit)"},
                     "type": "text",
-                    "text": {"default_value": "some-repo#123"},
+                    "text": {"default_value": f"{repository_name}#{issue_number}"},
                 }
             ]
         )

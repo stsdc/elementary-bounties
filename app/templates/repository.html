@@ -28,6 +28,8 @@
                                 <span class="badge bg-primary rounded-pill">${{issue.cumulative_bounty}}</span>
 
                                 <form action="/create-checkout-session" method="POST">
+                                    <input type="hidden" id="repository_name" name="repository_name" value="{{ repository.name }}">
+                                    <input type="hidden" id="issue_number" name="issue_number" value="{{issue.issue_number}}">
                                     <button type="submit" class="btn btn-outline-primary btn-sm">bump it</button>
                                 </form>
                               </li>
