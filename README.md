@@ -82,3 +82,8 @@ Finaly, run the API itself with the following command:
 ```zsh
 uvicorn app.main:app --reload
 ```
+
+
+```zsh
+docker run --network="host" --rm -it stripe/stripe-cli:latest listen --api-key sk_test_XXXXXX --forward-to localhost/stripe_hook
+```

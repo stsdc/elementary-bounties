@@ -10,6 +10,7 @@ from app.db.schemas import repositories as repos_schema
 from app.deps import get_current_user
 import os
 import dotenv
+import json
 
 import stripe
 # This test secret API key is a placeholder. Don't include personal details in requests with this key.
@@ -72,7 +73,7 @@ async def create_checkout_session(request: Request, repository_name: Annotated[s
                 },
             ],
             mode='payment',
-            success_url=str(request.base_url) + '/success.html',
+            success_url=str(request.base_url) + f'{repository_name}',
             cancel_url=str(request.base_url) + f'{repository_name}',
             custom_fields=[
                 {
@@ -87,3 +88,31 @@ async def create_checkout_session(request: Request, repository_name: Annotated[s
         return str(e)
 
     return RedirectResponse(checkout_session.url, status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/webhook")
+async def webhook_stripe_post_checkout(request: Request):
+    payload = await request.body()
+    event = None
+
+    try:
+        event = stripe.Event.construct_from(
+        json.loads(payload), stripe.api_key
+        )
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+
+    # Handle the event
+    if event.type == 'payment_intent.succeeded':
+        payment_intent = event.data.object # contains a stripe.PaymentIntent
+        # Then define and call a method to handle the successful payment intent.
+        # handle_payment_intent_succeeded(payment_intent)
+    elif event.type == 'payment_method.attached':
+        payment_method = event.data.object # contains a stripe.PaymentMethod
+        # Then define and call a method to handle the successful attachment of a PaymentMethod.
+        # handle_payment_method_attached(payment_method)
+    # ... handle other event types
+    else:
+        print('Unhandled event type {}'.format(event.type))
+    
+    return {}
