@@ -8,13 +8,17 @@ from app.db import sessions
 from app.db.models import Repositories, Users, Issues
 from app.db.schemas import repositories as repos_schema
 from app.deps import get_current_user
-
+import os
+import dotenv
 
 import stripe
 # This test secret API key is a placeholder. Don't include personal details in requests with this key.
 # To see your test secret API key embedded in code samples, sign in to your Stripe account.
 # You can also find your test secret API key at https://dashboard.stripe.com/test/apikeys.
-stripe.api_key = 'sk_test_51QU4mTHoNPk03hr4VgB8W8A47ihHBdH0PWWXEf8mCmYDmSt5sAcnCVsPERDrygT1034O7Q5oihmqedDtNpYdl6TF0024RmzG5R'
+# stripe.api_key = os.environ.get('STRIPE_KEY')
+stripe.api_key = dotenv.dotenv_values()["STRIPE_KEY"]
+
+# print(dotenv.dotenv_values())
 
 auth_user_dependency = Annotated[Users, Depends(get_current_user)]
 
@@ -36,7 +40,7 @@ async def index(
 
 
 @router.get("/{repository_name}")
-async def get_post(
+async def get_repository_html(
     request: Request,
     repository_name: str,
     db: AsyncSession = Depends(sessions.get_async_session),
