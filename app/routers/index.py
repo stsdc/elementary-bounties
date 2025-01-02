@@ -13,6 +13,7 @@ import dotenv
 import json
 
 import stripe
+
 # This test secret API key is a placeholder. Don't include personal details in requests with this key.
 # To see your test secret API key embedded in code samples, sign in to your Stripe account.
 # You can also find your test secret API key at https://dashboard.stripe.com/test/apikeys.
@@ -56,63 +57,94 @@ async def get_repository_html(
     )
     issues = result_issues.scalars().all()
 
-
     return templates.TemplateResponse(
-        name="repository.html", request=request, context={"repository": repository, "issues": issues}
+        name="repository.html",
+        request=request,
+        context={"repository": repository, "issues": issues},
     )
 
-@router.post('/create-checkout-session')
-async def create_checkout_session(request: Request, repository_name: Annotated[str, Form()], issue_number: Annotated[str, Form()]):
+
+@router.post("/create-checkout-session")
+async def create_checkout_session(
+    request: Request,
+    repository_name: Annotated[str, Form()],
+    issue_number: Annotated[str, Form()],
+):
     try:
         checkout_session = stripe.checkout.Session.create(
             line_items=[
                 {
                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    'price': 'price_1QU5fsHoNPk03hr4E2n5ztVe',
-                    'quantity': 1,
+                    "price": "price_1QU5fsHoNPk03hr4E2n5ztVe",
+                    "quantity": 1,
                 },
             ],
-            mode='payment',
-            success_url=str(request.base_url) + f'{repository_name}',
-            cancel_url=str(request.base_url) + f'{repository_name}',
+            mode="payment",
+            success_url=str(request.base_url) + f"{repository_name}",
+            cancel_url=str(request.base_url) + f"{repository_name}",
             custom_fields=[
                 {
                     "key": "issue",
-                    "label": {"type": "custom", "custom": "Repository and Issue number (do not edit)"},
+                    "label": {
+                        "type": "custom",
+                        "custom": "Repository and Issue number (do not edit)",
+                    },
                     "type": "text",
                     "text": {"default_value": f"{repository_name}#{issue_number}"},
                 }
-            ]
+            ],
         )
     except Exception as e:
         return str(e)
 
     return RedirectResponse(checkout_session.url, status_code=status.HTTP_303_SEE_OTHER)
 
-@router.post("/webhook")
-async def webhook_stripe_post_checkout(request: Request):
+
+@router.post("/webhook/stripe/checkout")
+async def webhook_stripe_post_checkout(
+    request: Request,
+    db: AsyncSession = Depends(sessions.get_async_session),
+):
     payload = await request.body()
     event = None
 
     try:
-        event = stripe.Event.construct_from(
-        json.loads(payload), stripe.api_key
-        )
+        event = stripe.Event.construct_from(json.loads(payload), stripe.api_key)
     except ValueError as e:
         # Invalid payload
         return HttpResponse(status=400)
 
     # Handle the event
-    if event.type == 'payment_intent.succeeded':
-        payment_intent = event.data.object # contains a stripe.PaymentIntent
-        # Then define and call a method to handle the successful payment intent.
-        # handle_payment_intent_succeeded(payment_intent)
-    elif event.type == 'payment_method.attached':
-        payment_method = event.data.object # contains a stripe.PaymentMethod
-        # Then define and call a method to handle the successful attachment of a PaymentMethod.
-        # handle_payment_method_attached(payment_method)
-    # ... handle other event types
-    else:
-        print('Unhandled event type {}'.format(event.type))
-    
+    if event.type == "checkout.session.completed":
+        # print(event.data.object)
+        custom_field: str = event.data.object["custom_fields"][0]["text"][
+            "default_value"
+        ]
+        custom_field_splitted = custom_field.split("#", 2)
+        repository_name = custom_field_splitted[0]
+        issue_number = custom_field_splitted[1]
+        bounty_amount = event.data.object["amount_total"]
+        await bump_bounty_issue(db, repository_name, issue_number, bounty_amount // 100)
+
     return {}
+
+
+async def bump_bounty_issue(
+    db, repository_name: str, issue_number: int, bounty_amount: int
+):
+    print(repository_name, issue_number, bounty_amount)
+    result_repository = await db.execute(
+        select(Repositories).where(Repositories.name == repository_name)
+    )
+    repository = result_repository.scalars().first()
+
+    result_issues = await db.execute(
+        select(Issues).where(Issues.repository_id == repository.id).where(
+            Issues.issue_number == issue_number
+        )
+    )
+
+    issue = result_issues.scalars().first()
+
+    issue.cumulative_bounty = issue.cumulative_bounty + bounty_amount
+    await db.commit()
