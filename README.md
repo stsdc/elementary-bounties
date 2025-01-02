@@ -83,7 +83,12 @@ Finaly, run the API itself with the following command:
 uvicorn app.main:app --reload
 ```
 
+## Test Webhooks
 
 ```zsh
 docker run --network="host" --rm -it stripe/stripe-cli:latest listen --api-key sk_test_XXXXXX --forward-to localhost/stripe_hook
+```
+
+```zsh
+docker run --network="host" ghcr.io/chmouel/gosmee:latest  client https://smee.io/imPbfItxHda72FK http://localhost:8000/webhook/github/issue
 ```
