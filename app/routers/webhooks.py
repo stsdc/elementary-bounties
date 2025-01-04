@@ -75,10 +75,32 @@ async def bump_bounty_issue(
     await db.commit()
 
 
+def is_eligable_for_bounty(issue) -> bool:
+    """An issue is eligible if it has the right label attached to it.
+    """
+    label_whitelist = ["confirmed"]
+
+    labels = issue["labels"]
+    label_names = list(map(lambda label: label["name"], labels))
+
+    return any(i in label_whitelist for i in label_names)
+
+
 @router.post("/github/issue")
 async def webhook_github_issue(
     request: Request,
     db: AsyncSession = Depends(sessions.get_async_session),
 ):
-    payload = await request.body()
-    print(payload)
+    payload = json.loads(json.loads(await request.body())["payload"])
+    issue = payload["issue"]
+
+    if is_eligable_for_bounty(issue):
+        print("yay")
+
+    # if "closed" == payload["action"]:
+    #     print(f"Issue closed: {issue["number"]}")
+    # elif "opened" == payload["action"]:
+    #     if issue["labels"] in labels:
+    #         print(issue["number"])
+    
+    
