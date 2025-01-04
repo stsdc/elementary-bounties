@@ -85,6 +85,25 @@ def is_eligable_for_bounty(issue) -> bool:
 
     return any(i in label_whitelist for i in label_names)
 
+async def check_issue_exists(issue, db: AsyncSession) -> Issues:
+    repository_name = issue["repository_url"].split('/')[-1]
+    result_repository = await db.execute(
+        select(Repositories).where(Repositories.name == repository_name)
+    )
+    repository = result_repository.scalars().first()
+    result_issues = await db.execute(
+        select(Issues).where(Issues.repository_id == repository.id).where(
+            Issues.issue_number == issue["number"]
+        )
+    )
+    return result_issues.scalars().first()
+
+async def repository_exists(repo_name, session):
+    result = await session.execute(
+        select(Repositories).where(Repositories.name == repo_name)
+    )
+    return result.scalars().first()
+
 
 @router.post("/github/issue")
 async def webhook_github_issue(
@@ -95,7 +114,20 @@ async def webhook_github_issue(
     issue = payload["issue"]
 
     if is_eligable_for_bounty(issue):
-        print("yay")
+        issue_db = await check_issue_exists(issue, db)
+        if issue_db:
+            print(issue_db.title)
+        else:
+            print("Issue does not exist.")
+            repo_name = issue["repository_url"].split('/')[-1]
+            repo = await repository_exists(repo_name, db)
+            db.add(Issues(
+                title=issue["title"],
+                repository_id= repo.id,
+                issue_number=issue["number"],
+            ))
+            await db.commit()
+            print("Issue created.")
 
     # if "closed" == payload["action"]:
     #     print(f"Issue closed: {issue["number"]}")
