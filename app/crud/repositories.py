@@ -39,3 +39,10 @@ async def get_repository_by_issue(issue, db: AsyncSession) -> Repositories:
         await db.commit()
         print("Issue created.")
     return repo_db
+
+async def get_repository_by_name(repo_name: str, db: AsyncSession) -> Repositories:
+    """Fetch a repository by its name from the database."""
+    result_repository = await db.execute(
+        select(Repositories).where(Repositories.name == repo_name)
+    )
+    return result_repository.scalars().first()

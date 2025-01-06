@@ -53,10 +53,7 @@ def is_eligable_for_bounty(issue) -> bool:
 
 async def bump_bounty_issue(db, repository_name: str, number: int, bounty_amount: int):
     print(repository_name, number, bounty_amount)
-    result_repository = await db.execute(
-        select(Repositories).where(Repositories.name == repository_name)
-    )
-    repository = result_repository.scalars().first()
+    repository = await crud_repos.get_repository_by_name(repository_name, db)
 
     result_issues = await db.execute(
         select(Issues)
