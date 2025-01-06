@@ -70,12 +70,15 @@ async def bump_bounty_issue(db, repository_name: str, number: int, bounty_amount
     await db.commit()
 
 
-def issue_state_to_str(state:bool) -> str:
+def issue_state_to_str(state: bool) -> str:
+    """Convert a boolean issue state to its corresponding string representation."""
     if state:
         return "open"
     return "closed"
 
-def issue_state_to_bool(state:str) -> bool:
+
+def issue_state_to_bool(state: str) -> bool:
+    """Convert issue state to a boolean value."""
     if state == "open":
         return True
     return False
