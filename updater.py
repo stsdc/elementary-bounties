@@ -13,7 +13,7 @@ async_session = sessions.get_async_session()
 
 # Replace with your GitHub access token
 access_token = os.environ.get("GITHUB_TOKEN")
-
+# print(access_token)
 # Replace with your organization's name
 org_name = "elementary"
 
@@ -54,9 +54,9 @@ async def get_db_repos(session):
     result = await session.execute(q)
     return result.scalars().all()
 
-async def issue_exists(issue_number, session):
+async def issue_exists(number, session):
     result = await session.execute(
-        select(Issues).where(Issues.issue_number == issue_number)
+        select(Issues).where(Issues.number == number)
     )
     return result.scalars().first()
 
@@ -78,14 +78,14 @@ async def update_issues():
                                 Issues(
                                     title=issue.title,
                                     repository_id=db_repo.id,
-                                    issue_number=issue.number,
+                                    number=issue.number,
                                 )
                             )
         await session.commit()
 
 
 async def main():
-    # await update_repositories()
+    await update_repositories()
     await update_issues()
 
 

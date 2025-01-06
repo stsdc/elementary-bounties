@@ -68,7 +68,7 @@ async def get_repository_html(
 async def create_checkout_session(
     request: Request,
     repository_name: Annotated[str, Form()],
-    issue_number: Annotated[str, Form()],
+    number: Annotated[str, Form()],
 ):
     try:
         checkout_session = stripe.checkout.Session.create(
@@ -90,7 +90,7 @@ async def create_checkout_session(
                         "custom": "Repository and Issue number (do not edit)",
                     },
                     "type": "text",
-                    "text": {"default_value": f"{repository_name}#{issue_number}"},
+                    "text": {"default_value": f"{repository_name}#{number}"},
                 }
             ],
         )

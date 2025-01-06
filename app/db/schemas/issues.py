@@ -5,8 +5,8 @@ from app.db.schemas.posts import Posts
 
 class Issues(BaseModel):
     title: str
-    completed: bool
-    issue_number: int
+    state: bool
+    number: int
     cumulative_bounty: int
     repository_id: int
 
