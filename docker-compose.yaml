@@ -2,9 +2,9 @@ version: "3.9"
 
 services:
   app:
+    env_file:
+    - ".env"
     build:
-      env_file:
-        - ".env"
       ports:
         - '5000:5000'
       context: .
