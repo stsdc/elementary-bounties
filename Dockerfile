@@ -43,4 +43,4 @@ RUN poetry install --no-interaction --no-cache --without dev
 COPY . .
 
 # Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000"]
+CMD ["poetry", "run" "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000"]
