@@ -3,7 +3,6 @@ name = "elementary-bounties"
 version = "0.1.0"
 description = ""
 authors = ["stsdc <6031763+stsdc@users.noreply.github.com>"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
