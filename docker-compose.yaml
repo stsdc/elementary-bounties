@@ -10,4 +10,4 @@ services:
     volumes:
       - ./data:/app/data  # Mount host directory 'data' to container's '/app/data' directory
     ports:
-      - "8000:5000"  # Map host port 8000 to container port 8000
+      - "5000:5000"  # Map host port 8000 to container port 8000
