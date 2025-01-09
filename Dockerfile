@@ -1,5 +1,5 @@
 # Use the official Python image from the Docker Hub
-FROM python:3.12
+FROM python:3.12 as python-base
 
 # https://python-poetry.org/docs#ci-recommendations
 ENV POETRY_VERSION=1.7.0
