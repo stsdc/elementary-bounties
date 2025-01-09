@@ -4,9 +4,9 @@ services:
   app:
     env_file:
     - ".env"
+    ports:
+    - '5000:5000'
     build:
-      ports:
-        - '5000:5000'
       context: .
       dockerfile: ./Dockerfile
     volumes:
