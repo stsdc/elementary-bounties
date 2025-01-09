@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      env_file:
+      - ".env"
+      ports:
+        - '5000:5000'
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./data:/app/data  # Mount host directory 'data' to container's '/app/data' directory
+    ports:
+      - "8000:8000"  # Map host port 8000 to container port 8000
