@@ -4,7 +4,7 @@ services:
   app:
     build:
       env_file:
-      - ".env"
+        - ".env"
       ports:
         - '5000:5000'
       context: .
