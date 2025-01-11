@@ -8,6 +8,6 @@ services:
       context: .
       dockerfile: ./Dockerfile
     volumes:
-      - /data/elementary-bounties/sql_app.db:/app/sql_app.db
+      - /data/elementary-bounties/:/app/data/
     ports:
       - "5000:5000"  # Map host port 8000 to container port 8000
