@@ -11,7 +11,7 @@ from typing import Any, AsyncGenerator
 from asyncio import current_task
 
 
-SQLALCHEMY_DATABASE_URL = getenv("DATABASE_URL", "sqlite+aiosqlite:///sql_app.db")
+SQLALCHEMY_DATABASE_URL = getenv("DATABASE_URL", "sqlite+aiosqlite:///data/sql_app.db")
 
 async_engine = create_async_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
