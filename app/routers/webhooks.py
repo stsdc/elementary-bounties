@@ -58,7 +58,7 @@ async def webhook_github_issue(
     request: Request,
     db: AsyncSession = Depends(sessions.get_async_session),
 ):
-    payload = json.loads(json.loads(await request.body())["payload"])
+    payload = json.loads(await request.body())
     issue = payload["issue"]
 
     if crud_issues.is_eligable_for_bounty(issue):
