@@ -1,26 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <title>elementary | Bounties</title>
-</head>
-
-<body>
-    <div class="container-fluid">
-        <ul>
-            {% for repository in repositories %}
-            <li><a href="/{{repository.name}}">{{repository.name}}</a></li>
-            {% endfor %}
-        </ul>
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% for repository in repositories %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ repository.name }}</h5>
+                    <a href="/{{ repository.name }}" class=" stretched-link">View issues</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-
-
-
-</body>
-
-</html>
+</div>
+{% endblock %}
