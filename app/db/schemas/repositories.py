@@ -4,7 +4,8 @@ from app.db.schemas.issues import Issues
 
 
 class Repositories(BaseModel):
-    name: str  # type: ignore
+    name: str
+    description: str
     id: int
     is_visible: bool
     issues_count: int
@@ -16,3 +17,4 @@ class Repositories(BaseModel):
 
 class RepositoriesCreate(Repositories):
     name: str = Field(max_length=50)
+    description: str = Field(max_length=250)

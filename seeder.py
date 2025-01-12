@@ -41,7 +41,8 @@ async def update_repositories():
                 if not repo.archived:
                     if not await repository_exists(repo, session):
                         print(repo.name)
-                        session.add(Repositories(name=repo.name))
+                        print(repo.description)
+                        session.add(Repositories(name=repo.name, description=repo.description))
 
         await session.commit()
 
@@ -86,7 +87,7 @@ async def update_issues():
 
 async def main():
     await update_repositories()
-    await update_issues()
+    # await update_issues()
 
 
 asyncio.run(main())

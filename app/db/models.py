@@ -37,6 +37,7 @@ class Repositories(Base):
 
     id = sa.Column(sa.Integer, primary_key=True, index=True)
     name = sa.Column(sa.Text, nullable=False)
+    description = sa.Column(sa.Text, nullable=True)
     is_visible = sa.Column(sa.Boolean, nullable=False, default=True)
     issues_count = sa.Column(sa.Integer, nullable=False, default=0)
 
