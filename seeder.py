@@ -68,9 +68,9 @@ async def update_issues():
         async with session.begin():
             for repo in repos:
                 if not repo.archived:
-                    counter += 1
-                    if counter >= 7:
-                        break
+                    # counter += 1
+                    # if counter >= 7:
+                    #     break
                     for issue in repo.get_issues(labels=labels_filter):
                         if not await issue_exists(issue.number, session):
                             print(repo.name, issue.title)
@@ -87,7 +87,7 @@ async def update_issues():
 
 async def main():
     await update_repositories()
-    # await update_issues()
+    await update_issues()
 
 
 asyncio.run(main())
