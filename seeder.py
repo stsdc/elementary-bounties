@@ -80,6 +80,7 @@ async def update_issues():
                                     title=issue.title,
                                     repository_id=db_repo.id,
                                     number=issue.number,
+                                    url=issue.html_url
                                 )
                             )
         await session.commit()

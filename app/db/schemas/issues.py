@@ -9,6 +9,7 @@ class Issues(BaseModel):
     number: int
     cumulative_bounty: int
     repository_id: int
+    url: str
 
     class Config:
         orm_mode = True

@@ -34,6 +34,7 @@ async def get_issue(issue, db: AsyncSession):
             title=issue["title"],
             repository_id=repo_db.id,
             number=issue["number"],
+            url=issue.html_url
         )
         db.add(issue_db)
         await db.commit()
