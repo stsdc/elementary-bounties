@@ -33,5 +33,4 @@ jobs:
     - name: Ruff
       uses: astral-sh/ruff-action@v3
       with:
-        src: "./"
-        args: check --verbose --line-length 120 --select C901
+        args: check
