@@ -1,19 +1,21 @@
-name: Pylint
+name: Lint
 
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - '**.yml'
+      - 'docs/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.12"]
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python 
       uses: actions/setup-python@v3
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.12
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -23,3 +25,13 @@ jobs:
         pylint $(git ls-files '*.py')
     - name: Ruff
       uses: astral-sh/ruff-action@v3.0.1
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Ruff
+      uses: astral-sh/ruff-action@v3
+      with:
+        src: "./pythainlp"
+        args: check --verbose --line-length 120 --select C901
