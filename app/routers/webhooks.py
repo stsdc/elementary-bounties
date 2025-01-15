@@ -1,17 +1,11 @@
-from typing import Sequence, Annotated
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Form
-from fastapi.responses import RedirectResponse
-from sqlalchemy import select, delete
-from fastapi.templating import Jinja2Templates
+from typing import Annotated
+from fastapi import APIRouter, Depends, status, Request, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from urllib3 import HTTPResponse
 from app.db import sessions
-from app.db.models import Repositories, Users, Issues
-from app.db.schemas import repositories as repos_schema
+from app.db.models import Users, Issues
 from app.deps import get_current_user
 import app.crud.issues as crud_issues
-import app.crud.repositories as crud_repos
-import os
 import dotenv
 import json
 
