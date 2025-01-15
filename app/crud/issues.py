@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models import Repositories, Issues
-from sqlalchemy import select, delete
+from sqlalchemy import select
 
 import app.crud.repositories as crud_repos
 

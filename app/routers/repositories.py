@@ -1,6 +1,6 @@
 from typing import Sequence, Annotated
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select, delete
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db import sessions
 from app.db.models import Repositories, Users
