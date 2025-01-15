@@ -22,7 +22,7 @@ jobs:
         poetry sync --all-groups --no-root
     - name: Pylint
       run: |
-        poetry run pylint $(git ls-files '*.py')
+        poetry run pylint ./
   ruff:
     runs-on: ubuntu-latest
     steps:
