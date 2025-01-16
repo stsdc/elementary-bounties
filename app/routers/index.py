@@ -69,6 +69,10 @@ async def create_checkout_session(
 ):
     try:
         checkout_session = stripe.checkout.Session.create(
+            metadata={
+                "repository_name": repository_name,
+                "issue_number": number
+            },
             line_items=[
                 {
                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
@@ -79,17 +83,6 @@ async def create_checkout_session(
             mode="payment",
             success_url=str(request.base_url) + f"{repository_name}",
             cancel_url=str(request.base_url) + f"{repository_name}",
-            custom_fields=[
-                {
-                    "key": "issue",
-                    "label": {
-                        "type": "custom",
-                        "custom": "Repository and Issue number (do not edit)",
-                    },
-                    "type": "text",
-                    "text": {"default_value": f"{repository_name}#{number}"},
-                }
-            ],
         )
     except Exception as e:
         return str(e)
