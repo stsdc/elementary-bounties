@@ -1,5 +1,4 @@
-from pydantic import BaseModel, constr, Field
-from datetime import date
+from pydantic import BaseModel, Field
 from app.db.schemas.issues import Issues
 
 

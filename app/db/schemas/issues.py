@@ -1,6 +1,4 @@
-from pydantic import BaseModel, constr, Field
-from datetime import date
-from app.db.schemas.posts import Posts
+from pydantic import BaseModel, Field
 
 
 class Issues(BaseModel):

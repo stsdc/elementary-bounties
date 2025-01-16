@@ -1,7 +1,6 @@
 import os
 from github import Github
 from dotenv import load_dotenv
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import asyncio
 from app.db import sessions
@@ -63,7 +62,7 @@ async def issue_exists(number, session):
 
 # async def issue_exists()
 async def update_issues():
-    counter = 0
+    # counter = 0
     async for session in sessions.get_async_session():
         async with session.begin():
             for repo in repos:

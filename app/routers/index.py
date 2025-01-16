@@ -1,16 +1,13 @@
-from typing import Sequence, Annotated
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Form
+from typing import Annotated
+from fastapi import APIRouter, Depends, status, Request, Form
 from fastapi.responses import RedirectResponse
-from sqlalchemy import select, delete
+from sqlalchemy import select
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db import sessions
 from app.db.models import Repositories, Users, Issues
-from app.db.schemas import repositories as repos_schema
 from app.deps import get_current_user
-import os
 import dotenv
-import json
 
 import stripe
 
@@ -72,6 +69,10 @@ async def create_checkout_session(
 ):
     try:
         checkout_session = stripe.checkout.Session.create(
+            metadata={
+                "repository_name": repository_name,
+                "issue_number": number
+            },
             line_items=[
                 {
                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
@@ -82,17 +83,6 @@ async def create_checkout_session(
             mode="payment",
             success_url=str(request.base_url) + f"{repository_name}",
             cancel_url=str(request.base_url) + f"{repository_name}",
-            custom_fields=[
-                {
-                    "key": "issue",
-                    "label": {
-                        "type": "custom",
-                        "custom": "Repository and Issue number (do not edit)",
-                    },
-                    "type": "text",
-                    "text": {"default_value": f"{repository_name}#{number}"},
-                }
-            ],
         )
     except Exception as e:
         return str(e)
