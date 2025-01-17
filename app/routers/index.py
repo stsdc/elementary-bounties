@@ -80,8 +80,8 @@ async def create_checkout_session(
                 },
             ],
             mode="payment",
-            success_url=f"{request.base_url}/repository/{repository_name}#success",
-            cancel_url=f"{request.base_url}/repository/{repository_name}",
+            success_url=f"{request.base_url}repository/{repository_name}#success",
+            cancel_url=f"{request.base_url}repository/{repository_name}",
         )
     except Exception as e:
         return str(e)
