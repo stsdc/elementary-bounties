@@ -16,9 +16,7 @@ import stripe
 # To see your test secret API key embedded in code samples, sign in to your Stripe account.
 # You can also find your test secret API key at https://dashboard.stripe.com/test/apikeys.
 stripe.api_key = os.environ.get('STRIPE_KEY')
-# stripe.api_key = dotenv.dotenv_values()["STRIPE_KEY"]
 
-# print(dotenv.dotenv_values())
 
 auth_user_dependency = Annotated[Users, Depends(get_current_user)]
 
@@ -82,8 +80,8 @@ async def create_checkout_session(
                 },
             ],
             mode="payment",
-            success_url=str(request.base_url) + f"{repository_name}",
-            cancel_url=str(request.base_url) + f"{repository_name}",
+            success_url=f"{request.base_url}/repository/{repository_name}#success",
+            cancel_url=f"{request.base_url}/repository/{repository_name}",
         )
     except Exception as e:
         return str(e)
