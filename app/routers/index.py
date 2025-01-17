@@ -8,14 +8,15 @@ from app.db import sessions
 from app.db.models import Repositories, Users, Issues
 from app.deps import get_current_user
 import dotenv
+import os
 
 import stripe
 
 # This test secret API key is a placeholder. Don't include personal details in requests with this key.
 # To see your test secret API key embedded in code samples, sign in to your Stripe account.
 # You can also find your test secret API key at https://dashboard.stripe.com/test/apikeys.
-# stripe.api_key = os.environ.get('STRIPE_KEY')
-stripe.api_key = dotenv.dotenv_values()["STRIPE_KEY"]
+stripe.api_key = os.environ.get('STRIPE_KEY')
+# stripe.api_key = dotenv.dotenv_values()["STRIPE_KEY"]
 
 # print(dotenv.dotenv_values())
 
