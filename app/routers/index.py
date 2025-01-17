@@ -38,7 +38,7 @@ async def index(
     )
 
 
-@router.get("/{repository_name}")
+@router.get("/repository/{repository_name}")
 async def get_repository_html(
     request: Request,
     repository_name: str,
