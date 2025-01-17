@@ -11,7 +11,7 @@ import json
 
 import stripe
 
-stripe.api_key = dotenv.dotenv_values()["STRIPE_KEY"]
+# stripe.api_key = dotenv.dotenv_values()["STRIPE_KEY"]
 
 # print(dotenv.dotenv_values())
 
