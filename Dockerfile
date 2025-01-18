@@ -41,4 +41,4 @@ COPY . /app
 RUN mkdir /app/data
 
 # Run the application
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000"]
+CMD ["poetry", "run", "python", "run.py"]
