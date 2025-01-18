@@ -1,16 +1,15 @@
+import os
 from typing import Annotated
 from fastapi import APIRouter, Depends, status, Request, Form
 from fastapi.responses import RedirectResponse
-from sqlalchemy import select
 from fastapi.templating import Jinja2Templates
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+import stripe
+
 from app.db import sessions
 from app.db.models import Repositories, Users, Issues
 from app.deps import get_current_user
-import dotenv
-import os
-
-import stripe
 
 # This test secret API key is a placeholder. Don't include personal details in requests with this key.
 # To see your test secret API key embedded in code samples, sign in to your Stripe account.

@@ -6,14 +6,9 @@ from app.db import sessions
 from app.db.models import Users, Issues
 from app.deps import get_current_user
 import app.crud.issues as crud_issues
-import dotenv
 import json
 
 import stripe
-
-# stripe.api_key = dotenv.dotenv_values()["STRIPE_KEY"]
-
-# print(dotenv.dotenv_values())
 
 auth_user_dependency = Annotated[Users, Depends(get_current_user)]
 

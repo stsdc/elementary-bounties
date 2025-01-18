@@ -1,9 +1,15 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+import logging
 
 from app.db.models import Repositories
 
-async def check_repository_exists(repo_name: str, db: AsyncSession) -> Repositories | None:
+logger = logging.getLogger("uvicorn.error")
+
+
+async def check_repository_exists(
+    repo_name: str, db: AsyncSession
+) -> Repositories | None:
     """
     Check if a repository with the given name exists in the database.
 
@@ -19,6 +25,7 @@ async def check_repository_exists(repo_name: str, db: AsyncSession) -> Repositor
     )
     return result.scalars().first()
 
+
 async def get_repository_by_issue(issue, db: AsyncSession) -> Repositories:
     """
     Get or create a repository by issue.
@@ -30,7 +37,7 @@ async def get_repository_by_issue(issue, db: AsyncSession) -> Repositories:
     Returns:
         Repositories: The repository object.
     """
-    repo_name = issue["repository_url"].split('/')[-1]
+    repo_name = issue["repository_url"].split("/")[-1]
     repo_db = await check_repository_exists(repo_name, db)
     if not repo_db:
         print("Repository does not exist.")
@@ -39,6 +46,7 @@ async def get_repository_by_issue(issue, db: AsyncSession) -> Repositories:
         await db.commit()
         print("Issue created.")
     return repo_db
+
 
 async def get_repository_by_name(repo_name: str, db: AsyncSession) -> Repositories:
     """Fetch a repository by its name from the database."""

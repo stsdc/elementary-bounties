@@ -1,10 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users, posts, auth, repositories, index, webhooks
+from app.log import get_logger
+
+log = get_logger(__name__)
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="Fastapi Template")
+    app = FastAPI(title="elementary Bounties")
+
+    log.info("✨ Starting elementary Bounties!")
 
     app.include_router(users.router)
     app.include_router(posts.router)
