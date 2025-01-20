@@ -1,4 +1,5 @@
 from typing import Annotated
+import json
 from fastapi import APIRouter, Depends, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from urllib3 import HTTPResponse
@@ -6,7 +7,6 @@ from app.db import sessions
 from app.db.models import Users, Issues
 from app.deps import get_current_user
 import app.crud.issues as crud_issues
-import json
 
 import stripe
 
