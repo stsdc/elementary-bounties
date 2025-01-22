@@ -71,6 +71,12 @@ async def create_checkout_session(
                 "repository_name": repository_name,
                 "issue_number": number
             },
+            payment_intent_data={
+                "metadata": {
+                    "repository_name": repository_name,
+                    "issue_number": number
+                }
+            },
             line_items=[
                 {
                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
