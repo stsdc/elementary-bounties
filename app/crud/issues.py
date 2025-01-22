@@ -1,7 +1,8 @@
+"""CRUD operations on issues."""
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.models import Repositories, Issues
 from sqlalchemy import select
 
+from app.db.models import Repositories, Issues
 import app.crud.repositories as crud_repos
 from app.log import get_logger
 
