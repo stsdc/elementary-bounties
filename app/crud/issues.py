@@ -3,6 +3,9 @@ from app.db.models import Repositories, Issues
 from sqlalchemy import select
 
 import app.crud.repositories as crud_repos
+from app.log import get_logger
+
+log = get_logger(__name__)
 
 
 async def check_issue_exists(issue, repo_db: Repositories, db: AsyncSession) -> Issues:
@@ -28,17 +31,17 @@ async def get_issue(issue, db: AsyncSession):
     repo_db = await crud_repos.get_repository_by_issue(issue, db)
     issue_db = await check_issue_exists(issue, repo_db, db)
     if not issue_db:
-        print("Issue does not exist.")
-
+        log.warning("Issue does not exist in the database")
+        log.debug("Trying to add a new issue '%s' in %s", issue["title"], repo_db.id)
         issue_db = Issues(
             title=issue["title"],
             repository_id=repo_db.id,
             number=issue["number"],
-            url=issue.html_url
+            url=issue["html_url"],
         )
         db.add(issue_db)
         await db.commit()
-        print("Issue created.")
+        log.debug("Issue %s '%s' add to the database", issue["number"], issue["title"])
     return issue_db
 
 
