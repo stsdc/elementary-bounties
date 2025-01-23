@@ -5,3 +5,4 @@ venv
 settings.json
 .ruff_cache
 .pytest_cache
+.coverage

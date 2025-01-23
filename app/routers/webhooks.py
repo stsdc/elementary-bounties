@@ -88,6 +88,8 @@ async def gate_by_github_ip(request: Request):
         None: If the request's IP address is a valid GitHub IP address,
         the function completes without raising an exception.
     """
+    log.debug("Github IPs check is %s", GITHUB_IPS_ONLY)
+
     # Allow GitHub IPs only
     if GITHUB_IPS_ONLY:
         try:
@@ -101,6 +103,7 @@ async def gate_by_github_ip(request: Request):
             allowlist = await client.get("https://api.github.com/meta")
         for valid_ip in allowlist.json()["hooks"]:
             if src_ip in ipaddress.ip_network(valid_ip):
+                log.debug("IP validation: %s - OK", request.client.host)
                 return
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
