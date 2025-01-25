@@ -46,7 +46,7 @@ async def get_issue(issue, db: AsyncSession):
     return issue_db
 
 
-def is_eligable_for_bounty(issue) -> bool:
+def is_eligible_for_bounty(issue) -> bool:
     """An issue is eligible if it has the right label attached to it."""
     label_whitelist = ["confirmed"]
 
