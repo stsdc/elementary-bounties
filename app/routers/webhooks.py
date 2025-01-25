@@ -147,17 +147,6 @@ async def webhook_github_issue(
     This function processes incoming GitHub webhook events related to issues.
     It verifies the signature of the payload, parses the payload, and updates
     the issue in the database if necessary.
-
-    Args:
-        request (Request): The incoming HTTP request containing the webhook payload.
-        db (AsyncSession): The database session dependency.
-        x_github_event (str): The type of GitHub event received, passed in the header.
-
-    Raises:
-        HTTPException: If the signature verification fails.
-
-    Returns:
-        None
     """
     log.debug("Received Github Event: %s", x_github_event)
 
@@ -165,10 +154,14 @@ async def webhook_github_issue(
     signature_header = request.headers.get("x-hub-signature-256")
     verify_signature(payload_body, GITHUB_WEBHOOK_SECRET, signature_header)
 
-    payload = json.loads(payload_body)
+    try:
+        payload = json.loads(payload_body)
+    except json.decoder.JSONDecodeError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Bad JSON.") from exc
+
     issue = payload["issue"]
 
-    if crud_issues.is_eligable_for_bounty(issue):
+    if crud_issues.is_eligible_for_bounty(issue):
         issue_db: Issues = await crud_issues.get_issue(issue, db)
         if issue["state"] != crud_issues.issue_state_to_str(issue_db.state):
             issue_db.state = crud_issues.issue_state_to_bool(issue["state"])
@@ -176,3 +169,5 @@ async def webhook_github_issue(
         if issue["title"] != issue_db.title:
             issue_db.title = issue["title"]
             await db.commit()
+        return {"message": f"An event for issue #{issue["number"]} received."}
+    return {"message": "Received an event for a non-eligible for bounty issue."}
