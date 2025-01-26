@@ -1,6 +1,5 @@
 from pydantic import BaseModel, constr, EmailStr, Field
 from datetime import date
-from app.db.schemas.posts import Posts
 
 
 class UsersBase(BaseModel):
@@ -20,4 +19,3 @@ class UsersCreate(UsersBase):
 class Users(UsersBase):
     id: int
     creation_date: date
-    posts: list[Posts] = []
