@@ -1,15 +1,14 @@
 """Tests for webhooks."""
 
 import pytest
-from fastapi import HTTPException, Request
-from httpx import Response
-from unittest.mock import AsyncMock, patch
-from app.db import sessions
-from app.db.models import Issues
-from app.routers.webhooks import gate_by_github_ip, webhook_github_issue
 import hmac
 import hashlib
-from fastapi import HTTPException
+from httpx import Response
+from unittest.mock import AsyncMock, patch
+from fastapi import HTTPException, Request
+
+from app.db.models import Issues
+from app.routers.webhooks import gate_by_github_ip, webhook_github_issue
 from app.routers.webhooks import verify_signature
 
 
