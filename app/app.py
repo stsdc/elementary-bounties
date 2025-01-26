@@ -1,8 +1,11 @@
-from fastapi import FastAPI
+"""The app."""
+
 from dotenv import load_dotenv
 
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import users, posts, auth, repositories, index, webhooks
+
+from app.routers import users, auth, repositories, index, webhooks
 from app.log import get_logger
 
 log = get_logger(__name__)
@@ -16,7 +19,6 @@ def create_app() -> FastAPI:
     log.info("✨ Starting elementary Bounties!")
 
     fapp.include_router(users.router)
-    fapp.include_router(posts.router)
     fapp.include_router(auth.router)
     fapp.include_router(repositories.router)
     fapp.include_router(index.router)
