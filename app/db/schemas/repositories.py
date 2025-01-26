@@ -11,7 +11,7 @@ class Repositories(BaseModel):
     issues: list[Issues] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class RepositoriesCreate(Repositories):
