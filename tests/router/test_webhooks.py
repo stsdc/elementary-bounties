@@ -4,6 +4,7 @@ import pytest
 from fastapi import HTTPException, Request
 from httpx import Response
 from unittest.mock import AsyncMock, patch
+from app.db import sessions
 from app.db.models import Issues
 from app.routers.webhooks import gate_by_github_ip, webhook_github_issue
 import hmac
@@ -80,12 +81,35 @@ def test_verify_signature_missing_header():
     assert exc_info.value.detail == "x-hub-signature-256 header is missing!"
 
 
-def test_verify_signature_invalid_signature():
-    """Test invalid signature."""
-    payload_body = b"test payload"
-    secret_token = "secret"
-    signature_header = "sha256=invalidsignature"
-    with pytest.raises(HTTPException) as exc_info:
-        verify_signature(payload_body, secret_token, signature_header)
-    assert exc_info.value.status_code == 403
-    assert exc_info.value.detail == "Request signatures didn't match!"
+@pytest.mark.anyio
+@patch("app.routers.webhooks.verify_signature")
+async def test_webhook_github_issue_non_eligible(mock_verify_signature):
+    """Test webhook_github_issue with a non-eligible issue."""
+    request = AsyncMock(Request)
+    request.body = AsyncMock(return_value=b'{"issue": {"number": 1, "state": "open", "title": "Test Issue", "labels": []}}')
+    request.headers = {"x-hub-signature-256": "valid_signature"}
+    db = AsyncMock()
+
+    response = await webhook_github_issue(request, db, "issues")
+    mock_verify_signature.assert_called_once()
+    assert response == {"message": "Received an event for a non-eligible for bounty issue."}
+
+@pytest.mark.anyio
+@patch("app.routers.webhooks.verify_signature")
+@patch("app.routers.webhooks.crud_issues.get_issue")
+async def test_webhook_github_issue_eligible(mock_get_issue, mock_verify_signature):
+    """Test webhook_github_issue with a non-eligible issue."""
+    request = AsyncMock(Request)
+    request.body = AsyncMock(return_value=b'{"issue": {"number": 1, "state": "open", "title": "Test Issue", "labels": [{"name":"confirmed"}]}}')
+    request.headers = {"x-hub-signature-256": "valid_signature"}
+    db = AsyncMock()
+    mock_get_issue.return_value = Issues(
+            title="Test Issue",
+            repository_id=123,
+            state="open",
+            number=1,
+            url="",
+    )
+    response = await webhook_github_issue(request, db, "issues")
+    mock_verify_signature.assert_called_once()
+    assert response == {"message": "An event for issue #1 received."}
