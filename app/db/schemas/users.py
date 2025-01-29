@@ -1,5 +1,5 @@
 from pydantic import BaseModel, constr, EmailStr, Field
-from datetime import date
+from datetime import datetime
 
 
 class UsersBase(BaseModel):
@@ -18,4 +18,4 @@ class UsersCreate(UsersBase):
 
 class Users(UsersBase):
     id: int
-    creation_date: date
+    creation_date: datetime

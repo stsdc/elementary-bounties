@@ -14,7 +14,7 @@ class Users(Base):
     last_name = sa.Column(sa.Text, nullable=False)
     email = sa.Column(sa.Text, nullable=False, unique=True)
     hashed_password = sa.Column(sa.Text, nullable=False)
-    creation_date = sa.Column(sa.DateTime, server_default=sa.func.now(), nullable=False)  # type: ignore
+    creation_date = sa.Column(sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False)  # type: ignore
     is_admin = sa.Column(sa.Boolean, nullable=False, default=False)
 
 class Repositories(Base):
