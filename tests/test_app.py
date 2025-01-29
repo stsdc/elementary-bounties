@@ -1,8 +1,12 @@
-# from httpx import AsyncClient
-# import pytest
+"""Test app."""
+from fastapi.testclient import TestClient
 
+from app.app import create_app
 
-# @pytest.mark.anyio
-# async def test_health(async_client: AsyncClient) -> None:
-#     rv = await async_client.get("/health")
-#     assert rv.status_code == 200
+app = create_app()
+client = TestClient(app)
+
+def test_health() -> None:
+    """Test health."""
+    response = client.get("/health")
+    assert response.status_code == 200
