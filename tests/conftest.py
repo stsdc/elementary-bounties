@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from asyncio import current_task
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 import pytest_asyncio
 from os import getenv
 
@@ -61,5 +61,5 @@ async def async_client(async_session) -> AsyncGenerator[AsyncClient, Any]:
 
     app = create_app()
     app.dependency_overrides[get_async_session] = override_get_db
-    async with AsyncClient(app=app, base_url="http://testserver") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
         yield client

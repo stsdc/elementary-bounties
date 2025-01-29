@@ -20,6 +20,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install poetry
         poetry sync --all-groups --no-root
-    - name: Pylint
+    - name: Pytest
       run: |
         poetry run pytest
