@@ -1,10 +1,9 @@
 """Tests for webhooks."""
-
-import pytest
+from unittest.mock import AsyncMock, patch
 import hmac
 import hashlib
+import pytest
 from httpx import Response
-from unittest.mock import AsyncMock, patch
 from fastapi import HTTPException, Request
 
 from app.db.models import Issues
