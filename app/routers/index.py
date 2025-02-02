@@ -56,9 +56,14 @@ async def get_repository_html(
 
 @router.get("/hot")
 async def get_hot_html(
+
     request: Request,
     db: AsyncSession = Depends(sessions.get_async_session),
 ):
+    """
+    Fetches and renders a list of issues with cumulative bounties greater than zero,
+    limits the results to 25, and renders them using the "hot.html" template.
+    """
     result_issues = await db.execute(select(Issues).where(Issues.cumulative_bounty > 0).limit(25))
     issues = result_issues.scalars().all()
 
