@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block metatags %}
-<title>✨ Bounties | {{ repository.name }}</title>
+<title>✨ Bounties | Hot</title>
 {% endblock %}
 {% block content %}
     <div class="container-fluid">
@@ -8,19 +8,20 @@
             <div class="col-6">
                 <div class="card" style="width: 100%;">
                     <div class="card-body">
-                        <h5 class="card-title">{{ repository.name }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{repository.description}}</h6>
+                        <h5 class="card-title">🔥 Hot bounties</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Those issues are the most desired to be fixed</h6>
                         <ul class="list-group">
                             {% for issue in issues %}
                             <li class="list-group-item d-flex justify-content-between align-items-start">
                                 <div class="ms-2 me-auto" style="max-width: 70%;">
                                   <a href="{{issue.url}}" target="_blank">{{issue.title}}</a>
+                                  <span class="text-secondary">{{issue.repository_name}}</span>
                                   <span class="text-secondary">#{{issue.number}}</span>
                                 </div>
                                 <span class="badge bg-primary rounded-pill me-2">${{issue.cumulative_bounty}}</span>
 
                                 <form action="/create-checkout-session" method="POST">
-                                    <input type="hidden" id="repository_name" name="repository_name" value="{{ repository.name }}">
+                                    <input type="hidden" id="repository_name" name="repository_name" value="{{ issue.repository_name }}">
                                     <input type="hidden" id="number" name="number" value="{{issue.number}}">
                                     <button type="submit" class="btn btn-outline-primary btn-sm">bump it</button>
                                 </form>

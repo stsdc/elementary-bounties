@@ -78,6 +78,7 @@ async def update_issues():
                                 Issues(
                                     title=issue.title,
                                     repository_id=db_repo.id,
+                                    repository_name=repo.name,
                                     number=issue.number,
                                     url=issue.html_url
                                 )
@@ -85,9 +86,26 @@ async def update_issues():
         await session.commit()
 
 
+async def update_repository_name_in_issue():
+    async for session in sessions.get_async_session():
+        async with session.begin():
+            db_repos = await get_db_repos(session)
+            for repo in db_repos:
+                    print(repo.id)
+                    issues_s = await session.execute(select(Issues).where(Issues.repository_id == repo.id))
+                    issues = issues_s.scalars().all()
+                    for issue in issues:
+                        print(repo.name, issue.title)
+                        issue.repository_name = repo.name
+                        session.add(
+                            issue
+                        )
+        await session.commit()
+
 async def main():
-    await update_repositories()
-    await update_issues()
+    # await update_repositories()
+    # await update_issues()
+    await update_repository_name_in_issue()
 
 
 asyncio.run(main())
