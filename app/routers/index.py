@@ -14,7 +14,7 @@ from app.deps import get_current_user
 # This test secret API key is a placeholder. Don't include personal details in requests with this key.
 # To see your test secret API key embedded in code samples, sign in to your Stripe account.
 # You can also find your test secret API key at https://dashboard.stripe.com/test/apikeys.
-stripe.api_key = os.environ.get('STRIPE_KEY')
+stripe.api_key = os.environ.get("STRIPE_KEY")
 
 
 auth_user_dependency = Annotated[Users, Depends(get_current_user)]
@@ -42,14 +42,10 @@ async def get_repository_html(
     repository_name: str,
     db: AsyncSession = Depends(sessions.get_async_session),
 ):
-    result_repository = await db.execute(
-        select(Repositories).where(Repositories.name == repository_name)
-    )
+    result_repository = await db.execute(select(Repositories).where(Repositories.name == repository_name))
     repository = result_repository.scalars().first()
 
-    result_issues = await db.execute(
-        select(Issues).where(Issues.repository_id == repository.id)
-    )
+    result_issues = await db.execute(select(Issues).where(Issues.repository_id == repository.id))
     issues = result_issues.scalars().all()
 
     return templates.TemplateResponse(
@@ -58,6 +54,19 @@ async def get_repository_html(
         context={"repository": repository, "issues": issues},
     )
 
+@router.get("/hot")
+async def get_hot_html(
+    request: Request,
+    db: AsyncSession = Depends(sessions.get_async_session),
+):
+    result_issues = await db.execute(select(Issues).where(Issues.cumulative_bounty > 0).limit(25))
+    issues = result_issues.scalars().all()
+
+    return templates.TemplateResponse(
+        name="hot.html",
+        request=request,
+        context={"issues": issues},
+    )
 
 @router.post("/create-checkout-session")
 async def create_checkout_session(
@@ -67,15 +76,9 @@ async def create_checkout_session(
 ):
     try:
         checkout_session = stripe.checkout.Session.create(
-            metadata={
-                "repository_name": repository_name,
-                "issue_number": number
-            },
+            metadata={"repository_name": repository_name, "issue_number": number},
             payment_intent_data={
-                "metadata": {
-                    "repository_name": repository_name,
-                    "issue_number": number
-                }
+                "metadata": {"repository_name": repository_name, "issue_number": number}
             },
             line_items=[
                 {

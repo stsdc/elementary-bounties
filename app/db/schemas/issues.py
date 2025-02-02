@@ -7,6 +7,7 @@ class Issues(BaseModel):
     number: int
     cumulative_bounty: int
     repository_id: int
+    repository_name: str
     url: str
 
     class Config:

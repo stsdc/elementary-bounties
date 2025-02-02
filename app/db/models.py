@@ -40,4 +40,5 @@ class Issues(Base):
     cumulative_bounty = sa.Column(sa.Integer, nullable=False, default=0)
     repository = relationship("Repositories", back_populates="issues", lazy="selectin")
     repository_id = sa.Column(sa.Integer, ForeignKey("repositories.id"), nullable=False, index=True)
+    repository_name = sa.Column(sa.Text, nullable=True)
     url = sa.Column(sa.Text, nullable=False)
