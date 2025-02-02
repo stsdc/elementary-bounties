@@ -8,32 +8,24 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import stripe
 
 from app.db import sessions
-from app.db.models import Repositories, Users, Issues
-from app.deps import get_current_user
+from app.db.models import Repositories, Issues
 
 # This test secret API key is a placeholder. Don't include personal details in requests with this key.
 # To see your test secret API key embedded in code samples, sign in to your Stripe account.
 # You can also find your test secret API key at https://dashboard.stripe.com/test/apikeys.
 stripe.api_key = os.environ.get("STRIPE_KEY")
 
-
-auth_user_dependency = Annotated[Users, Depends(get_current_user)]
-
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 
 @router.get("/")
-async def index(
-    request: Request, db: AsyncSession = Depends(sessions.get_async_session)
-):
-
+async def index(request: Request, db: AsyncSession = Depends(sessions.get_async_session)):
+    """Index."""
     q = select(Repositories)
     result = await db.execute(q)
     repos = result.scalars().all()
-    return templates.TemplateResponse(
-        name="index.html", request=request, context={"repositories": repos}
-    )
+    return templates.TemplateResponse(name="index.html", request=request, context={"repositories": repos})
 
 
 @router.get("/repository/{repository_name}")
@@ -42,6 +34,7 @@ async def get_repository_html(
     repository_name: str,
     db: AsyncSession = Depends(sessions.get_async_session),
 ):
+    """Repository HTML."""
     result_repository = await db.execute(select(Repositories).where(Repositories.name == repository_name))
     repository = result_repository.scalars().first()
 
@@ -54,9 +47,9 @@ async def get_repository_html(
         context={"repository": repository, "issues": issues},
     )
 
+
 @router.get("/hot")
 async def get_hot_html(
-
     request: Request,
     db: AsyncSession = Depends(sessions.get_async_session),
 ):
@@ -73,18 +66,20 @@ async def get_hot_html(
         context={"issues": issues},
     )
 
+
 @router.post("/create-checkout-session")
 async def create_checkout_session(
     request: Request,
     repository_name: Annotated[str, Form()],
     number: Annotated[str, Form()],
 ):
+    """
+    Creates a Stripe checkout session for a given repository and issue number.
+    """
     try:
         checkout_session = stripe.checkout.Session.create(
             metadata={"repository_name": repository_name, "issue_number": number},
-            payment_intent_data={
-                "metadata": {"repository_name": repository_name, "issue_number": number}
-            },
+            payment_intent_data={"metadata": {"repository_name": repository_name, "issue_number": number}},
             line_items=[
                 {
                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
@@ -96,7 +91,7 @@ async def create_checkout_session(
             success_url=f"{request.base_url}repository/{repository_name}#success",
             cancel_url=f"{request.base_url}repository/{repository_name}",
         )
-    except Exception as e:
+    except stripe.error.StripeError as e:
         return str(e)
 
     return RedirectResponse(checkout_session.url, status_code=status.HTTP_303_SEE_OTHER)
