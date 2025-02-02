@@ -1,3 +1,4 @@
+"""Contains routes for HTML pages ans some more."""
 import os
 from typing import Annotated
 from fastapi import APIRouter, Depends, status, Request, Form
